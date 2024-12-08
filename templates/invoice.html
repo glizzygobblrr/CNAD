@@ -1,0 +1,19 @@
+<!-- templates/invoice.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <p><strong>Invoice ID:</strong> {{.InvoiceID}}</p>
+    <p><strong>User ID:</strong> {{.UserID}}</p>
+    <p><strong>Vehicle ID:</strong> {{.VehicleID}}</p>
+    <p><strong>Start Time:</strong> {{.StartTime}}</p>
+    <p><strong>End Time:</strong> {{.EndTime}}</p>
+    <p><strong>Total Price:</strong> ${{.Price}}</p>
+    <a href="/vehicles">Go Back to Vehicles</a>
+</body>
+</html>
