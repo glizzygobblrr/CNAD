@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Available Vehicles</title></head>
+<body>
+<h2>Available Vehicles</h2>
+<form method="POST" action="/book">
+    <select name="vehicle_id">
+        {{range .}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}}
+    </select><br>
+    Start Time: <input type="datetime-local" name="start_time" required><br>
+    End Time: <input type="datetime-local" name="end_time" required><br>
+    <button type="submit">Book</button>
+</form>
+</body>
+</html>
+

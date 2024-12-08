@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><title>Your Bookings</title></head>
+<body>
+<h2>Your Bookings</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Vehicle</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    {{range .}}
+    <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Vehicle}}</td>
+        <td>{{.StartTime}}</td>
+        <td>{{.EndTime}}</td>
+        <td>{{.Price}}</td>
+        <td>
+            <!-- Form to cancel the booking -->
+            <form method="POST" action="/cancel_booking">
+                <input type="hidden" name="booking_id" value="{{.ID}}">
+                <button type="submit" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
+            </form>
+
+            <!-- Form to update the booking -->
+            <form method="POST" action="/update_booking">
+                <input type="hidden" name="booking_id" value="{{.ID}}">
+                <label for="start_time_{{.ID}}">Start Time:</label>
+                <input type="datetime-local" name="start_time" id="start_time_{{.ID}}" value="{{.StartTime}}">
+                <label for="end_time_{{.ID}}">End Time:</label>
+                <input type="datetime-local" name="end_time" id="end_time_{{.ID}}" value="{{.EndTime}}">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    {{end}}
+</table>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update User Information</title>
+</head>
+<body>
+    <h1>Update Your Information</h1>
+    <form method="POST">
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="{{.Email}}" required>
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" placeholder="Leave blank to keep current password">
+        <br>
+
+        <label for="membership">Membership:</label>
+        <select name="membership" required>
+            <option value="basic" {{if eq .Membership "basic"}}selected{{end}}>Basic</option>
+            <option value="premium" {{if eq .Membership "premium"}}selected{{end}}>Premium</option>
+        </select>
+        <br>
+
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
