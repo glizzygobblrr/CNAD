@@ -33,4 +33,6 @@ business logic tasks, such as user registration, login, booking vehicles.
 Authentication & Authorization: Since the microservices are loosely coupled, security must be ensured at the service
 boundary. For this, JWT tokens are used to authenticate users across services. Each service verifies the JWT token 
 before allowing access to its endpoints.
-Error Handling & Resilience: Proper error handling and fallbacks are implemented to ensure the system can handle failures gracefully. For instance, if one service is temporarily unavailable, users may receive informative error messages, and retry mechanisms are employed to maintain a robust system.
+Error Handling & Resilience: Proper error handling and fallbacks are implemented to ensure the system can handle 
+failures gracefully. MeANingful error logs and messages are also clearly stated to refer to in case of errors and bugs 
+that requrie troubleshooting.
