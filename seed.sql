@@ -1,3 +1,5 @@
+--note: you need to register as a new user
+
 --users_db:
 create database users_db;
 use users_db;
@@ -36,5 +38,3 @@ CREATE TABLE bookings (
     price DECIMAL(10, 2),
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 );
-
---note: you need to register as a new user
