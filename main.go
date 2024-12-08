@@ -7,6 +7,7 @@ import (
 
 	"CNAD/usersMS"
 	"CNAD/bookingMS"
+	//"CNAD/billingMS"
 )
 
 
@@ -30,6 +31,7 @@ func main() {
 	http.HandleFunc("/bookings", bookingMS.ViewBookingsHandler)
 	http.HandleFunc("/cancel_booking", bookingMS.CancelBookingHandler)
 	http.HandleFunc("/update_booking", bookingMS.UpdateBookingHandler)
+
 
 	// Start the server
 	fmt.Println("Server started at http://localhost:5000")

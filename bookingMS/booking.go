@@ -31,7 +31,6 @@ type Booking struct {
 
 func InitBookingService() {
 	var err error
-	// Connect to the booking database for vehicles and bookings
 	bookingDB, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/booking_db")
 	if err != nil {
 		log.Fatalf("Failed to connect to booking database: %v", err)
@@ -40,7 +39,6 @@ func InitBookingService() {
 		log.Fatalf("Booking database connection is not active: %v", err)
 	}
 
-	// Connect to the users database for user information
 	userDB, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/users_db")
 	if err != nil {
 		log.Fatalf("Failed to connect to users database: %v", err)
@@ -77,7 +75,7 @@ func ViewVehiclesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch available vehicles from bookingDB
+	// Fetch available vehicles
 	rows, err := bookingDB.Query("SELECT id, name FROM vehicles WHERE is_available = TRUE")
 	if err != nil {
 		http.Error(w, "Error fetching vehicles", http.StatusInternalServerError)
@@ -176,7 +174,6 @@ func ViewBookingsHandler(w http.ResponseWriter, r *http.Request) {
 
 	email := (*claims)["email"].(string)
 
-	// Fetch user ID from usersDB
 	var userID int
 	err = userDB.QueryRow("SELECT id FROM users WHERE email = ?", email).Scan(&userID)
 	if err != nil {
@@ -230,7 +227,6 @@ func CancelBookingHandler(w http.ResponseWriter, r *http.Request) {
 
 		email := (*claims)["email"].(string)
 
-		// Fetch user ID from usersDB
 		var userID int
 		err = userDB.QueryRow("SELECT id FROM users WHERE email = ?", email).Scan(&userID)
 		if err != nil {
@@ -238,7 +234,6 @@ func CancelBookingHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Get booking ID from form data (POST)
 		bookingID := r.FormValue("booking_id")
 		if bookingID == "" {
 			http.Error(w, "Booking ID is required", http.StatusBadRequest)
@@ -298,12 +293,10 @@ func UpdateBookingHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Get the booking ID and new details from the form data
 		bookingID := r.FormValue("booking_id")
 		startTime := r.FormValue("start_time")
 		endTime := r.FormValue("end_time")
 
-		// Ensure booking ID and times are provided
 		if bookingID == "" || startTime == "" || endTime == "" {
 			http.Error(w, "Booking ID, start time, and end time are required", http.StatusBadRequest)
 			return
@@ -318,8 +311,6 @@ func UpdateBookingHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error updating booking", http.StatusInternalServerError)
 			return
 		}
-
-		// Redirect to the bookings page after updating
 		http.Redirect(w, r, "/bookings", http.StatusSeeOther)
 	}
 }

@@ -16,7 +16,6 @@ var bookingDB *sql.DB
 // Initialize database connection
 func InitBillingService() {
 	var err error
-	// Connect to the booking database for vehicles and bookings
 	bookingDB, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/booking_db")
 	if err != nil {
 		log.Fatalf("Failed to connect to booking database: %v", err)
@@ -25,7 +24,6 @@ func InitBillingService() {
 		log.Fatalf("Booking database connection is not active: %v", err)
 	}
 
-	// Connect to the users database for user information
 	userDB, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/users_db")
 	if err != nil {
 		log.Fatalf("Failed to connect to users database: %v", err)
@@ -35,16 +33,15 @@ func InitBillingService() {
 	}
 }
 
-// Calculate the price based on membership and rental duration
+// Calculate the price based on membership
 func CalculatePrice(membership string, startTime, endTime string) float64 {
 	duration := calculateDuration(startTime, endTime)
 	basePrice := 10.0 // Base price per hour
 
-	// Apply membership discount
 	if membership == "Premium" {
-		return basePrice * 0.9 * duration // 10% discount for Premium members
+		return basePrice * 0.9 * duration
 	}
-	return basePrice * duration // Basic members pay the full price
+	return basePrice * duration 
 }
 
 // Calculate rental duration in hours
@@ -54,17 +51,16 @@ func calculateDuration(startTime, endTime string) float64 {
 	return end.Sub(start).Hours() // Duration in hours
 }
 
-// Generate an invoice after booking confirmation
-func generateInvoice(userID int, vehicleID int, startTime, endTime string, price float64) {
-	// For simplicity, just log the invoice
+// Generate invoice
+func GenerateInvoice(userID int, vehicleID int, startTime, endTime string, price float64) {
 	invoiceID := fmt.Sprintf("INV-%d-%d", userID, time.Now().Unix())
 	invoice := fmt.Sprintf("Invoice ID: %s\nUser ID: %d\nVehicle ID: %d\nStart Time: %s\nEnd Time: %s\nPrice: $%.2f",
 		invoiceID, userID, vehicleID, startTime, endTime, price)
 
-	// Store or send the invoice (this example just logs it)
+	
 	log.Printf("Generated Invoice: \n%s\n", invoice)
+	// Cannot implement
 
-	// Send invoice via email or save to user's profile (not implemented here)
 }
 
 // Booking handler that calculates price and generates an invoice
@@ -99,7 +95,7 @@ func BookVehicleHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Retrieve vehicle and rental details
 		vehicleIDStr := r.FormValue("vehicle_id")
-		vehicleID, err := strconv.Atoi(vehicleIDStr) // Convert vehicleID to int
+		vehicleID, err := strconv.Atoi(vehicleIDStr)
 		if err != nil {
 			http.Error(w, "Invalid vehicle ID", http.StatusBadRequest)
 			return
@@ -120,7 +116,6 @@ func BookVehicleHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Mark the vehicle as unavailable
 		_, err = bookingDB.Exec("UPDATE vehicles SET is_available = FALSE WHERE id = ?", vehicleID)
 		if err != nil {
 			http.Error(w, "Error updating vehicle availability", http.StatusInternalServerError)
@@ -128,7 +123,7 @@ func BookVehicleHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Generate the invoice after booking
-		generateInvoice(userID, vehicleID, startTime, endTime, price)
+		GenerateInvoice(userID, vehicleID, startTime, endTime, price)
 
 		http.Redirect(w, r, "/vehicles", http.StatusSeeOther)
 	}
