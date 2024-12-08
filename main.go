@@ -139,7 +139,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			Expires:  time.Now().Add(24 * time.Hour),
 			HttpOnly: true,
 		})
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/vehicles", http.StatusSeeOther)
 	} else {
 		renderTemplate(w, "templates/login.html", nil)
 	}
@@ -216,42 +216,14 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 			user.Membership = newMembership // Update in the local variable
 		}
 
-		// Redirect to the dashboard or profile page
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		// Redirect to the vehicles page
+		http.Redirect(w, r, "/vehicles", http.StatusSeeOther)
 	}
 
 	// Render the update form with current user details pre-filled
 	renderTemplate(w, "templates/update_user.html", user)
 }
 
-// Dashboard
-func dashboardHandler(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("token")
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
-
-	tokenStr := cookie.Value
-	claims := &jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if err != nil || !token.Valid {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
-
-	email := (*claims)["email"].(string)
-	var user User
-	err = db.QueryRow("SELECT id, email, membership FROM users WHERE email = ?", email).Scan(&user.ID, &user.Email, &user.Membership)
-	if err != nil {
-		http.Error(w, "User not found", http.StatusInternalServerError)
-		return
-	}
-
-	renderTemplate(w, "templates/dashboard.html", user)
-}
 
 // View available vehicles
 func viewVehiclesHandler(w http.ResponseWriter, r *http.Request) {
@@ -361,7 +333,7 @@ func bookVehicleHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/vehicles", http.StatusSeeOther)
 	}
 }
 
@@ -476,7 +448,6 @@ func cancelBookingHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Redirect to dashboard after canceling
 		http.Redirect(w, r, "/bookings", http.StatusSeeOther)
 	}
 }
@@ -542,7 +513,6 @@ func main() {
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/update_user", updateUserHandler)
-	http.HandleFunc("/dashboard", dashboardHandler)
 
 	http.HandleFunc("/vehicles", viewVehiclesHandler)
 	http.HandleFunc("/book", bookVehicleHandler)
