@@ -12,6 +12,7 @@ import (
 
 var userDB *sql.DB
 var bookingDB *sql.DB
+var billingDB *sql.DB
 
 // Initialize database connection
 func InitBillingService() {
@@ -29,6 +30,14 @@ func InitBillingService() {
 		log.Fatalf("Failed to connect to users database: %v", err)
 	}
 	if err := userDB.Ping(); err != nil {
+		log.Fatalf("Users database connection is not active: %v", err)
+	}
+
+	billingDB, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/billing_db")
+	if err != nil {
+		log.Fatalf("Failed to connect to users database: %v", err)
+	}
+	if err := billingDB.Ping(); err != nil {
 		log.Fatalf("Users database connection is not active: %v", err)
 	}
 }
